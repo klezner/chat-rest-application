@@ -19,8 +19,6 @@
         <maven.compiler.source>11</maven.compiler.source>
         <junit.version>5.8.2</junit.version>
         <mapstruct-version>1.4.2.Final</mapstruct-version>
-        <hibernate-version>6.0.0.Final</hibernate-version>
-        <postgresql-version>42.3.4</postgresql-version>
     </properties>
 
     <build>
@@ -36,26 +34,20 @@
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
+            <artifactId>javaee-api</artifactId>
             <version>8.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.22</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxb-provider</artifactId>
-            <version>6.0.1.Final</version>
+            <version>4.7.3.Final</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.jboss.spec.javax.websocket</groupId>-->
-        <!--            <artifactId>jboss-websocket-api_1.1_spec</artifactId>-->
-        <!--            <version>2.0.0.Final</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -69,12 +61,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-version}</version>
+            <version>42.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
