@@ -10,7 +10,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
 @Singleton
-public class ChannelConfiguration {
+class ChannelConfiguration {
 
     private static final ChannelFactory CHANNEL_FACTORY = new MainChannelFactory();
 

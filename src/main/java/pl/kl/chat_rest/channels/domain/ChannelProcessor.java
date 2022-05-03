@@ -5,6 +5,7 @@ import pl.kl.chat_rest.channels.ports.ChannelRepository;
 import pl.kl.chat_rest.channels.ports.ChannelService;
 import pl.kl.chat_rest.common.IdGenerator;
 
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,14 +16,19 @@ class ChannelProcessor implements ChannelService {
 
     @Override
     public Channel create(String name) {
-        if (channelRepository.getByName(name).isPresent()) {
-            throw new ChannelAlreadyExistsException();
-        }
+        ifChannelExists(name);
         final Channel channel = Channel.builder()
                 .id(idGenerator.getNext())
                 .name(name)
+                .clients(new HashSet<>())
                 .build();
         return channelRepository.save(channel);
+    }
+
+    private void ifChannelExists(String name) {
+        if (channelRepository.getByName(name).isPresent()) {
+            throw new ChannelAlreadyExistsException();
+        }
     }
 
     @Override

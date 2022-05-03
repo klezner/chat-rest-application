@@ -10,6 +10,6 @@ public class ClientDto {
     String id;
     @NotNull
     String name;
-//    String activeChannel;
+    String activeChannel;
 
 }

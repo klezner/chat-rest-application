@@ -15,15 +15,20 @@ class ClientProcessor implements ClientService {
 
     @Override
     public Client create(String name) {
-        if (clientRepository.getByName(name).isPresent()) {
-            throw new ClientAlreadyExistsException();
-        }
+        ifClientExists(name);
         final Client client = Client.builder()
                 .id(idGenerator.getNext())
                 .name(name)
-//                .activeChannel(new Channel()) // TODO: ustawic defaultowy channel
+                .activeChannel("general")
                 .build();
         return clientRepository.save(client);
+    }
+
+    // TODO: wyodrębnić do nowej klasy
+    private void ifClientExists(String name) {
+        if (clientRepository.getByName(name).isPresent()) {
+            throw new ClientAlreadyExistsException();
+        }
     }
 
     @Override

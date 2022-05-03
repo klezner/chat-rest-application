@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @NamedQuery(name = ChannelEntity.GET_ALL, query = "SELECT c FROM Channel c")
 @NamedQuery(name = ChannelEntity.GET_BY_NAME, query = "SELECT c FROM Channel c WHERE  c.name = :name")
@@ -22,6 +23,8 @@ public class ChannelEntity {
     String id;
     @Column(unique = true)
     String name;
+    @ElementCollection
+    Set<String> clients;
 //    Set<Client> clients;
 //    List<Message> archivedMessages;
 

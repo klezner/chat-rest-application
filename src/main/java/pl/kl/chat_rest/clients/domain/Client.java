@@ -9,6 +9,7 @@ public class Client {
 
     String id;
     String name;
+    String activeChannel;
 //    Channel activeChannel;
 
 }

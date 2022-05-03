@@ -10,7 +10,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
 @Singleton
-public class ClientConfiguration {
+class ClientConfiguration {
 
     private static final ClientFactory CLIENT_FACTORY = new MainClientFactory();
 

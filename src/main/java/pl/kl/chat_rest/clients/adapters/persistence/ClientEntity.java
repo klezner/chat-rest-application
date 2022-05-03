@@ -22,6 +22,7 @@ public class ClientEntity {
     String id;
     @Column(unique = true)
     String name;
+    String activeChannel;
 //    Channel activeChannel;
 
 }
