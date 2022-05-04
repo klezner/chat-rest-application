@@ -1,15 +1,17 @@
 package pl.kl.chat_rest.clients.domain;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
-@Value
+@Getter
 public class Client {
 
-    String id;
-    String name;
-    String activeChannel;
+    private final String id;
+    private final String name;
+    @Setter
+    private String activeChannel;
 //    Channel activeChannel;
 
 }

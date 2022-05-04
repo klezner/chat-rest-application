@@ -33,4 +33,8 @@ public class JpaClientRepository {
                 .getResultList();
     }
 
+    public ClientEntity update(ClientEntity clientEntity) {
+        return entityManager.merge(clientEntity);
+    }
+
 }

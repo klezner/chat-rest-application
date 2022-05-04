@@ -35,4 +35,7 @@ public class JpaChannelRepository {
                 .getResultList();
     }
 
+    public ChannelEntity update(ChannelEntity channelEntity) {
+        return entityManager.merge(channelEntity);
+    }
 }

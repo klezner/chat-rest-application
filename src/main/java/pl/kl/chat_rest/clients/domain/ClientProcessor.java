@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 class ClientProcessor implements ClientService {
 
+    private static final String DEFAULT_CHANNEL = "general";
     private final IdGenerator idGenerator;
     private final ClientRepository clientRepository;
 
@@ -19,7 +20,7 @@ class ClientProcessor implements ClientService {
         final Client client = Client.builder()
                 .id(idGenerator.getNext())
                 .name(name)
-                .activeChannel("general")
+                .activeChannel(DEFAULT_CHANNEL)
                 .build();
         return clientRepository.save(client);
     }
@@ -40,5 +41,12 @@ class ClientProcessor implements ClientService {
     @Override
     public List<Client> getAll() {
         return clientRepository.getAll();
+    }
+
+    @Override
+    public Client setActiveChannel(String name, String activeChannel) {
+        final Client client = getByName(name);
+        client.setActiveChannel(activeChannel);
+        return clientRepository.update(client);
     }
 }

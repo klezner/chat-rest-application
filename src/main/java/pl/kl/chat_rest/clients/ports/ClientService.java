@@ -12,4 +12,6 @@ public interface ClientService {
 
     List<Client> getAll();
 
+    Client setActiveChannel(String name, String activeChannel);
+
 }

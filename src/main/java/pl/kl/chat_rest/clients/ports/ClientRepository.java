@@ -13,4 +13,6 @@ public interface ClientRepository {
 
     List<Client> getAll();
 
+    Client update(Client client);
+
 }

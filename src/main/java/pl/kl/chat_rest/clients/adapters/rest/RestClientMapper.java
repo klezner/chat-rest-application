@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface RestClientMapper {
 
-    Client toDomain(ClientDto dto);
+//    Client toDomain(ClientDto dto);
 
     ClientDto toDto(Client client);
 

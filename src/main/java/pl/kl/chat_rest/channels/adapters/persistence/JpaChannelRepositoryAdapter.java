@@ -38,4 +38,12 @@ public class JpaChannelRepositoryAdapter implements ChannelRepository {
                 .map(channelMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Channel update(Channel channel) {
+        final ChannelEntity channelEntity = channelMapper.toEntity(channel);
+        final ChannelEntity persistedEntity = channelRepository.update(channelEntity);
+        return channelMapper.toDomain(persistedEntity);
+    }
+
 }

@@ -27,7 +27,7 @@ public class ClientController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
-    public Response createClient(ClientDto clientDto) {
+    public Response createClient(ClientCreateDto clientDto) {
         final Client client = clientService.create(clientDto.getName());
         final ClientDto dto = clientMapper.toDto(client);
         return Response.created(getLocation(dto.getName()))
@@ -52,6 +52,17 @@ public class ClientController {
         final List<Client> clients = clientService.getAll();
         final List<ClientDto> dtoList = clientMapper.toDto(clients);
         return Response.ok(dtoList)
+                .build();
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public Response setClientActiveChannel(ClientUpdateDto clientDto) {
+        final Client client = clientService.setActiveChannel(clientDto.getName(), clientDto.getActiveChannel());
+        final ClientDto dto = clientMapper.toDto(client);
+        return Response.ok(getLocation(dto.getName()))
+                .entity(dto)
                 .build();
     }
 

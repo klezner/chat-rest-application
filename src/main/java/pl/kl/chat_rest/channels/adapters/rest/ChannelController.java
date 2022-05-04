@@ -27,7 +27,7 @@ public class ChannelController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
-    public Response createChannel(ChannelDto channelDto) {
+    public Response createChannel(ChannelCreateDto channelDto) {
         final Channel channel = channelService.create(channelDto.getName());
         final ChannelDto dto = channelMapper.toDto(channel);
         return Response.created(getLocation(dto.getName()))
@@ -52,6 +52,17 @@ public class ChannelController {
         final List<Channel> channels = channelService.getAll();
         final List<ChannelDto> dtoList = channelMapper.toDto(channels);
         return Response.ok(dtoList)
+                .build();
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public Response setChannelClient(ChannelUpdateDto channelDto) {
+        final Channel channel = channelService.addClient(channelDto.getName(), channelDto.getClientName());
+        final ChannelDto dto = channelMapper.toDto(channel);
+        return Response.ok(getLocation(dto.getName()))
+                .entity(dto)
                 .build();
     }
 

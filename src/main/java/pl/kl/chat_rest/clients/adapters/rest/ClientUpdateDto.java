@@ -2,11 +2,14 @@ package pl.kl.chat_rest.clients.adapters.rest;
 
 import lombok.Data;
 
-@Data
-public class ClientDto {
+import javax.validation.constraints.NotNull;
 
-    String id;
+@Data
+public class ClientUpdateDto {
+
+    @NotNull
     String name;
+    @NotNull
     String activeChannel;
 
 }

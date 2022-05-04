@@ -42,4 +42,12 @@ class ChannelProcessor implements ChannelService {
         return channelRepository.getAll();
     }
 
+    @Override
+    public Channel addClient(String name, String clientName) {
+        final Channel channel = getByName(name);
+        channel.getClients().add(clientName);
+        return channelRepository.update(channel);
+    }
+
+
 }

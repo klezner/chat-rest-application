@@ -38,4 +38,13 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
                 .map(clientMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Client update(Client client) {
+        final ClientEntity clientEntity = clientMapper.toEntity(client);
+        final ClientEntity persistedEntity = clientRepository.update(clientEntity);
+        return clientMapper.toDomain(persistedEntity);
+    }
+
+
 }

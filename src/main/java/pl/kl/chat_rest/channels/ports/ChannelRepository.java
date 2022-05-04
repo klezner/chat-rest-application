@@ -12,4 +12,7 @@ public interface ChannelRepository {
     Optional<Channel> getByName(String name);
 
     List<Channel> getAll();
+
+    Channel update(Channel channel);
+
 }

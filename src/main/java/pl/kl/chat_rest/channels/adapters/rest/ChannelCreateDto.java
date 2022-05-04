@@ -2,12 +2,12 @@ package pl.kl.chat_rest.channels.adapters.rest;
 
 import lombok.Data;
 
-import java.util.Set;
+import javax.validation.constraints.NotNull;
 
 @Data
-public class ChannelDto {
+public class ChannelCreateDto {
 
-    String id;
+    @NotNull
     String name;
-    Set<String> clients;
+
 }

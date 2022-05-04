@@ -12,4 +12,6 @@ public interface ChannelService {
 
     List<Channel> getAll();
 
+    Channel addClient(String name, String clientName);
+
 }
