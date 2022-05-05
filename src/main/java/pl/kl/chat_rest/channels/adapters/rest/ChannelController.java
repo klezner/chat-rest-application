@@ -48,7 +48,7 @@ public class ChannelController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response getAllClients() {
+    public Response getAllChannels() {
         final List<Channel> channels = channelService.getAll();
         final List<ChannelDto> dtoList = channelMapper.toDto(channels);
         return Response.ok(dtoList)
