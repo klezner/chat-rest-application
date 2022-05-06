@@ -1,4 +1,4 @@
-package pl.kl.chat_client.clients;
+package pl.kl.chat_client.handlers.rest.clients;
 
 import lombok.Builder;
 

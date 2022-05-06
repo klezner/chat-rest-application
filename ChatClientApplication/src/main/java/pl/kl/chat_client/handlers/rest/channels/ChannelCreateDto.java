@@ -1,4 +1,4 @@
-package pl.kl.chat_client.channels;
+package pl.kl.chat_client.handlers.rest.channels;
 
 import lombok.Builder;
 

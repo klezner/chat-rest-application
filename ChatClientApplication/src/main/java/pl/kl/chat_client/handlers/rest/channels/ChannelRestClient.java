@@ -1,9 +1,10 @@
-package pl.kl.chat_client.channels;
+package pl.kl.chat_client.handlers.rest.channels;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import pl.kl.chat_client.common.ExceptionDto;
+import pl.kl.chat_client.common.ResponseDto;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
@@ -13,12 +14,13 @@ import java.util.List;
 
 @Log
 @RequiredArgsConstructor
-public class ChannelRestClient {
+public class ChannelRestClient implements ChannelClient {
 
     private static final String CHANNELS_RESOURCE_PATH = "http://localhost:8080/chat-rest-application-1.0-SNAPSHOT/api/channels";
     private final ResteasyClient resteasyClient;
 
-    public String createChannel(String name) {
+    @Override
+    public ResponseDto createChannel(String name) {
         final ChannelCreateDto channelCreateDto = ChannelCreateDto.builder()
                 .name(name)
                 .build();
@@ -26,41 +28,43 @@ public class ChannelRestClient {
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(channelCreateDto, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == 201) {
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
             final ChannelDto channelDto = response.readEntity(ChannelDto.class);
             // TODO: usunąć
             log.info("createChannel: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));
             //
-            return response.getStatusInfo().toString();
+            return channelDto;
         }
         final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
         // TODO: usunąć
         log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
         //
-        return exceptionDto.getDescription();
+        return exceptionDto;
     }
 
-    public String getChannelByName(String name) {
+    @Override
+    public ResponseDto getChannelByName(String name) {
         final Response response = resteasyClient.target(CHANNELS_RESOURCE_PATH)
                 .path("{name}")
                 .resolveTemplate("name", name)
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .get();
-        if (response.getStatus() == 200) {
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             final ChannelDto channelDto = response.readEntity(ChannelDto.class);
             // TODO: usunąć
             log.info("getChannelByName: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));
             //
-            return channelDto.toString();
+            return channelDto;
         }
         final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
         // TODO: usunąć
         log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
         //
-        return exceptionDto.getDescription();
+        return exceptionDto;
     }
 
+    @Override
     public List<ChannelDto> getAllChannels() {
         final Response response = resteasyClient.target(CHANNELS_RESOURCE_PATH)
                 .request()
@@ -70,6 +74,7 @@ public class ChannelRestClient {
         });
     }
 
+    @Override
     public String setChannelClient(String name, String clientName) {
         final ChannelUpdateDto channelUpdateDto = ChannelUpdateDto.builder()
                 .name(name)
@@ -79,7 +84,7 @@ public class ChannelRestClient {
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .put(Entity.entity(channelUpdateDto, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == 200) {
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             final ChannelDto channelDto = response.readEntity(ChannelDto.class);
             // TODO: usunąć
             log.info("setChannelClient: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));

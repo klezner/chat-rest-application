@@ -1,4 +1,4 @@
-package pl.kl.chat_client.messages;
+package pl.kl.chat_client.handlers.rest.messages;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -11,12 +11,13 @@ import java.util.List;
 
 @Log
 @RequiredArgsConstructor
-public class MessageRestClient {
+public class MessageRestClient implements MessageClient {
 
     private static final String CLIENT_MESSAGES_RESOURCE_PATH = "http://localhost:8080/chat-rest-application-1.0-SNAPSHOT/api/messages/client";
     private static final String CHANNEL_MESSAGES_RESOURCE_PATH = "http://localhost:8080/chat-rest-application-1.0-SNAPSHOT/api/messages/channel";
     private final ResteasyClient resteasyClient;
 
+    @Override
     public List<MessageDto> getMessagesByClientName(String name) {
         final Response response = resteasyClient.target(CLIENT_MESSAGES_RESOURCE_PATH)
                 .path("{name}")
@@ -28,6 +29,7 @@ public class MessageRestClient {
         });
     }
 
+    @Override
     public List<MessageDto> getMessagesByChannelName(String name) {
         final Response response = resteasyClient.target(CHANNEL_MESSAGES_RESOURCE_PATH)
                 .path("{name}")

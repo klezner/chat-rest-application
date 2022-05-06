@@ -1,14 +1,22 @@
 package pl.kl.chat_client;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
-import pl.kl.chat_client.messages.MessageRestClient;
+import pl.kl.chat_client.ui.UserInterface;
+
+import java.io.IOException;
 
 public class ChatClientApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        final ResteasyClient resteasyClient = new ResteasyClientBuilderImpl().build();
+        final ChatClient chatClient = new ChatClient();
+
+        final UserInterface userInterface = new UserInterface(chatClient);
+
+        userInterface.loginUser();
+
+        userInterface.handleUser();
+
+//        final ResteasyClient resteasyClient = new ResteasyClientBuilderImpl().build();
 
         //--------------------//
 //        final ClientRestClient clientRestClient = new ClientRestClient(resteasyClient);
@@ -41,12 +49,12 @@ public class ChatClientApplication {
         //--------------------//
         System.out.println("//--------------------//");
         //--------------------//
-        final MessageRestClient messageRestClient = new MessageRestClient(resteasyClient);
-
-        System.out.println("getMessagesByClientName");
-        messageRestClient.getMessagesByClientName("miro").forEach(System.out::println);
-        System.out.println("getMessagesByChannelName");
-        messageRestClient.getMessagesByChannelName("general").forEach(System.out::println);
+//        final MessageRestClient messageRestClient = new MessageRestClient(resteasyClient);
+//
+//        System.out.println("getMessagesByClientName");
+//        messageRestClient.getMessagesByClientName("miro").forEach(System.out::println);
+//        System.out.println("getMessagesByChannelName");
+//        messageRestClient.getMessagesByChannelName("general").forEach(System.out::println);
     }
 
 }

@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @ToString // TODO: usunąć
 @Getter
-public class ExceptionDto {
+public class ExceptionDto extends ResponseDto {
 
     String timestamp;
     String description;
