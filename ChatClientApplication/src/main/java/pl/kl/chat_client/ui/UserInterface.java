@@ -1,9 +1,8 @@
 package pl.kl.chat_client.ui;
 
-import lombok.RequiredArgsConstructor;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import pl.kl.chat_client.Actions;
 import pl.kl.chat_client.ChatClient;
+import pl.kl.chat_client.common.Actions;
 import pl.kl.chat_client.common.ExceptionDto;
 import pl.kl.chat_client.common.ResponseDto;
 import pl.kl.chat_client.handlers.rest.ChatClientFactory;
@@ -13,14 +12,17 @@ import pl.kl.chat_client.handlers.rest.channels.ChannelDto;
 import pl.kl.chat_client.handlers.rest.clients.ClientClient;
 import pl.kl.chat_client.handlers.rest.clients.ClientDto;
 import pl.kl.chat_client.handlers.rest.messages.MessageClient;
+import pl.kl.chat_client.jmsmessageservice.JmsMessageListener;
+import pl.kl.chat_client.jmsmessageservice.JmsMessageSender;
 
+import javax.jms.JMSException;
+import javax.naming.NamingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 public class UserInterface {
 
     private static final String DEFAULT_CHANNEL_NAME = "general";
@@ -32,10 +34,28 @@ public class UserInterface {
     private final BufferedReader reader = userInterfaceFactory.createBufferedReader();
     private final PrintWriter printer = userInterfaceFactory.createPrintWriter();
     private final ChatClientFactory chatClientFactory = new MainChatClientFactory();
+//    private final ProxyFactory proxyFactory;
+//    private final ConnectionFactory connectionFactory;
+//    private final Topic topic;
+
+    //    private final JmsMessageListener messageListener;
+    private final JmsMessageSender messageSender;
     private final ResteasyClient resteasyClient = chatClientFactory.createResteasyClient();
     private final ClientClient clientClient = chatClientFactory.createClientClient(resteasyClient);
     private final ChannelClient channelClient = chatClientFactory.createChannelClient(resteasyClient);
     private final MessageClient messageClient = chatClientFactory.createMessageClient(resteasyClient);
+
+    public UserInterface(ChatClient chatClient) throws NamingException {
+        this.chatClient = chatClient;
+//        this.messageListener = new JmsMessageListener();
+        this.messageSender = new JmsMessageSender();
+
+//        this.proxyFactory = chatClientFactory.createProxyFactory();
+//        this.connectionFactory = chatClientFactory.createConnectionFactory(proxyFactory);
+//        this.topic = chatClientFactory.createTopic(proxyFactory);
+//        this.messageListener = chatClientFactory.createMessageListener(connectionFactory, topic, chatClient.getName(), chatClient.getActiveChannel());
+//        this.messageSender = chatClientFactory.createMessageSender(connectionFactory, topic, reader, chatClient.getName(), chatClient.getActiveChannel());
+    }
 
     public void loginUser() throws IOException {
         printer.println("Welcome, please enter your username: ");
@@ -63,7 +83,9 @@ public class UserInterface {
         printer.printf("Welcome %s!%n", name);
     }
 
-    public void handleUser() throws IOException {
+    public void handleUser() throws IOException, JMSException {
+        // TODO: pomyśleć co z tym
+        new Thread(new JmsMessageListener()).start();
         String message;
         while ((message = reader.readLine()) != null) {
             if (message.startsWith(CMD_PREFIX)) {
@@ -109,9 +131,10 @@ public class UserInterface {
             }
         }
     }
+    // TODO: zaimplementować cache
 
-    private void handleMessageSend(String message) {
-
+    private void handleMessageSend(String message) throws JMSException {
+        messageSender.sendMessage(chatClient.getName(), chatClient.getActiveChannel(), message);
     }
 
     private void handleInvalidAction() {
@@ -210,6 +233,7 @@ public class UserInterface {
 
     private void handleLogout() {
         printer.println("handleLogout");
+//        messageListener.get
     }
 
 }

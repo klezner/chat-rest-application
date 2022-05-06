@@ -1,4 +1,4 @@
-package pl.kl.chat_client;
+package pl.kl.chat_client.jmsmessageservice;
 
 import lombok.extern.java.Log;
 
@@ -6,15 +6,18 @@ import javax.jms.*;
 import javax.naming.NamingException;
 import java.util.Scanner;
 
-@Log // TODO: usunąć
-public class MessageListener {
+@Log
+public class JmsListener {
 
     private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
     private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
 
-    private static javax.jms.MessageListener onMessage = message -> {
+    private static MessageListener onMessage = message -> {
         try {
-            log.info(message.getBody(String.class));
+            final String client = message.getStringProperty("client");
+            final String channel = message.getStringProperty("channel");
+            final String content = message.getStringProperty("content");
+            System.out.println(client + " -> " + channel + ": " + content);
         } catch (JMSException e) {
             e.printStackTrace();
         }

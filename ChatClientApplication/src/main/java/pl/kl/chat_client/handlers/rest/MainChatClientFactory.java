@@ -11,6 +11,9 @@ import pl.kl.chat_client.handlers.rest.messages.MessageRestClient;
 
 public class MainChatClientFactory implements ChatClientFactory {
 
+    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
+    private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
+
     @Override
     public ResteasyClient createResteasyClient() {
         return new ResteasyClientBuilderImpl().build();
