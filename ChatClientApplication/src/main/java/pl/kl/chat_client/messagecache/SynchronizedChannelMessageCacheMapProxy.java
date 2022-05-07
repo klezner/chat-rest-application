@@ -1,10 +1,13 @@
 package pl.kl.chat_client.messagecache;
 
+import java.util.Optional;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 public class SynchronizedChannelMessageCacheMapProxy implements ChannelMessageCache {
 
-    /*private final ChatServerFactory factory = new MainChatServerFactory();
     private final ChannelMessageCache channelMessageCache;
-    private final ReadWriteLock lock = factory.createReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public SynchronizedChannelMessageCacheMapProxy(ChannelMessageCache channelMessageCache) {
         this.channelMessageCache = channelMessageCache;
@@ -19,18 +22,10 @@ public class SynchronizedChannelMessageCacheMapProxy implements ChannelMessageCa
     }
 
     @Override
-    public void cacheMessageFromChannel(String channel, String message) {
+    public void cacheMessageFromChannel(String client, String channel, String message) {
         lock.writeLock().lock();
-        channelMessageCache.cacheMessageFromChannel(channel, message);
+        channelMessageCache.cacheMessageFromChannel(client, channel, message);
         lock.writeLock().unlock();
-
     }
-
-    @Override
-    public void removeCachedChannel(String channel) {
-        lock.writeLock().lock();
-        channelMessageCache.removeCachedChannel(channel);
-        lock.writeLock().unlock();
-    }*/
 
 }

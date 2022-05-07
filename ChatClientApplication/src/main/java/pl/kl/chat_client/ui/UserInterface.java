@@ -14,6 +14,8 @@ import pl.kl.chat_client.handlers.rest.clients.ClientDto;
 import pl.kl.chat_client.handlers.rest.messages.MessageClient;
 import pl.kl.chat_client.jmsmessageservice.JmsMessageListener;
 import pl.kl.chat_client.jmsmessageservice.JmsMessageSender;
+import pl.kl.chat_client.messagecache.MessageCache;
+import pl.kl.chat_client.messagecache.MessageCacheList;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
@@ -85,7 +87,7 @@ public class UserInterface {
 
     public void handleUser() throws IOException, JMSException {
         // TODO: pomyśleć co z tym
-        new Thread(new JmsMessageListener()).start();
+        new Thread(new JmsMessageListener(chatClient)).start();
         String message;
         while ((message = reader.readLine()) != null) {
             if (message.startsWith(CMD_PREFIX)) {
@@ -149,6 +151,15 @@ public class UserInterface {
 
     }
 
+    private void syncChannel() {
+        final MessageCache cachedMessages = chatClient.getMessageCache().getCachedMessagesFromChannel(chatClient.getActiveChannel())
+                .orElse(new MessageCacheList());
+        String message;
+        while ((message = cachedMessages.getLastCachedMessage()) != null) {
+            printer.println(message);
+        }
+    }
+
     private void handleInvalidChannelAction() {
         printer.println("Invalid channel action");
     }
@@ -163,8 +174,10 @@ public class UserInterface {
             chatClient.setActiveChannel(channelName);
             if (response instanceof ChannelDto) {
                 printer.printf("Channel: %s has been created. You have joined channel: %s%n", channelName, chatClient.getActiveChannel());
+                syncChannel();
             } else {
                 printer.printf("Channel: %s exists. You have joined channel: %s%n", channelName, chatClient.getActiveChannel());
+                syncChannel();
             }
         }
     }
