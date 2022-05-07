@@ -36,11 +36,6 @@ public class UserInterface {
     private final BufferedReader reader = userInterfaceFactory.createBufferedReader();
     private final PrintWriter printer = userInterfaceFactory.createPrintWriter();
     private final ChatClientFactory chatClientFactory = new MainChatClientFactory();
-//    private final ProxyFactory proxyFactory;
-//    private final ConnectionFactory connectionFactory;
-//    private final Topic topic;
-
-    //    private final JmsMessageListener messageListener;
     private final JmsMessageSender messageSender;
     private final ResteasyClient resteasyClient = chatClientFactory.createResteasyClient();
     private final ClientClient clientClient = chatClientFactory.createClientClient(resteasyClient);
@@ -49,14 +44,7 @@ public class UserInterface {
 
     public UserInterface(ChatClient chatClient) throws NamingException {
         this.chatClient = chatClient;
-//        this.messageListener = new JmsMessageListener();
         this.messageSender = new JmsMessageSender();
-
-//        this.proxyFactory = chatClientFactory.createProxyFactory();
-//        this.connectionFactory = chatClientFactory.createConnectionFactory(proxyFactory);
-//        this.topic = chatClientFactory.createTopic(proxyFactory);
-//        this.messageListener = chatClientFactory.createMessageListener(connectionFactory, topic, chatClient.getName(), chatClient.getActiveChannel());
-//        this.messageSender = chatClientFactory.createMessageSender(connectionFactory, topic, reader, chatClient.getName(), chatClient.getActiveChannel());
     }
 
     public void loginUser() throws IOException {
@@ -85,16 +73,16 @@ public class UserInterface {
         printer.printf("Welcome %s!%n", name);
     }
 
-    public void handleUser() throws IOException, JMSException {
+    public void handleUser() throws IOException, JMSException, NamingException {
         // TODO: pomyśleć co z tym
-        new Thread(new JmsMessageListener(chatClient)).start();
+        startJmsListenerThread();
+
         String message;
         while ((message = reader.readLine()) != null) {
             if (message.startsWith(CMD_PREFIX)) {
                 final String[] splitMessage = message.split(SPLIT_REGEX, MAX_SPLIT_LIMIT);
                 final String command = splitMessage[0];
                 if (Actions.CLOSE_CONNECTION.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
-                    // TODO:
                     handleLogout();
                 } else if (Actions.HELP.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
                     handleHelp();
@@ -104,8 +92,6 @@ public class UserInterface {
                     handleAllUsernamesGet();
                 } else if (Actions.ALL_CHANNELS.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
                     handleAllChannelsGet();
-                } else if (Actions.ALL_FILES.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
-                    handleServerFiles();
                 } else if (Actions.CHAT_HISTORY.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
                     handleChannelHistory();
                 } else if (Actions.CHANNEL.getInput().equalsIgnoreCase(command) && splitMessage.length >= 1) {
@@ -133,7 +119,11 @@ public class UserInterface {
             }
         }
     }
-    // TODO: zaimplementować cache
+
+    private void startJmsListenerThread() throws NamingException {
+        final Thread jmsListenerThread = new Thread(new JmsMessageListener(chatClient, printer));
+        jmsListenerThread.start();
+    }
 
     private void handleMessageSend(String message) throws JMSException {
         messageSender.sendMessage(chatClient.getName(), chatClient.getActiveChannel(), message);
@@ -144,11 +134,12 @@ public class UserInterface {
     }
 
     private void handleFileDownload(String message) {
-
+        printer.println("To implement: handleFileDownload");
     }
 
     private void handleFileUpload(String filePath) {
-
+        printer.println("To implement: handleFileUpload");
+        messageSender.sendFile(chatClient.getName(), chatClient.getActiveChannel(), filePath);
     }
 
     private void syncChannel() {
@@ -198,10 +189,6 @@ public class UserInterface {
         }
     }
 
-    private void handleServerFiles() {
-
-    }
-
     private void handleAllChannelsGet() {
         final String channels = channelClient.getAllChannels().stream()
                 .map(ChannelDto::getName)
@@ -218,7 +205,11 @@ public class UserInterface {
 
     private void handleAboutMe() {
         final ClientDto client = (ClientDto) clientClient.getClientByName(chatClient.getName());
-        final String messageFormat = String.format("Username: %s | Active channel: %s", client.getName(), client.getActiveChannel());
+        final String clientChannels = channelClient.getAllChannels().stream()
+                .filter(channelDto -> channelDto.getClients().contains(chatClient.getName()))
+                .map(ChannelDto::getName)
+                .collect(Collectors.joining(" "));
+        final String messageFormat = String.format("Username: %s | Subscribed channels: %s | Active channel: %s", client.getName(), clientChannels, client.getActiveChannel());
         printer.println(messageFormat);
     }
 
@@ -228,25 +219,25 @@ public class UserInterface {
                         "%s -> get all users%n" +
                         "%s -> get all channels%n" +
                         "%s -> get my channel history%n" +
-                        "%s -> get all server files%n" +
                         "%s %s channel_name -> create and join new channels or join channel if exists (still subscribed)%n" +
-                        "%s %s -> leave channel (unsubscribe) and delete if there is no clients%n" +
                         "%s %s -> get all channel users (subscribing channel)%n" +
                         "%s file_name -> upload file to server%n" +
                         "/downlo@d file_name -> download file to server%n" + // bug with word "download"
                         "%s -> disconnect server and close client",
-                Actions.ME.getInput(), Actions.ALL_CLIENTS.getInput(), Actions.ALL_CHANNELS.getInput(),
-                Actions.CHAT_HISTORY.getInput(), Actions.ALL_FILES.getInput(), Actions.CHANNEL.getInput(),
-                Actions.CHANNEL_JOIN.getInput(), Actions.CHANNEL.getInput(), Actions.CHANNEL_LEAVE.getInput(),
-                Actions.CHANNEL.getInput(), Actions.ALL_CLIENTS.getInput(), Actions.UPLOAD_FILE.getInput(),
+                Actions.ME.getInput(),
+                Actions.ALL_CLIENTS.getInput(),
+                Actions.ALL_CHANNELS.getInput(),
+                Actions.CHAT_HISTORY.getInput(),
+                Actions.CHANNEL.getInput(), Actions.CHANNEL_JOIN.getInput(),
+                Actions.CHANNEL.getInput(), Actions.ALL_CLIENTS.getInput(),
+                Actions.UPLOAD_FILE.getInput(),
 //                Actions.DOWNLOAD_FILE.getInput(),
                 Actions.CLOSE_CONNECTION.getInput());
         printer.println(messageFormat);
     }
 
     private void handleLogout() {
-        printer.println("handleLogout");
-//        messageListener.get
+        Runtime.getRuntime().exit(0);
     }
 
 }

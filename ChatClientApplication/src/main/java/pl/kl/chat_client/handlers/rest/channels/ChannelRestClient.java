@@ -29,17 +29,9 @@ public class ChannelRestClient implements ChannelClient {
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(channelCreateDto, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-            final ChannelDto channelDto = response.readEntity(ChannelDto.class);
-            // TODO: usunąć
-            log.info("createChannel: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));
-            //
-            return channelDto;
+            return response.readEntity(ChannelDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto;
+        return response.readEntity(ExceptionDto.class);
     }
 
     @Override
@@ -51,17 +43,9 @@ public class ChannelRestClient implements ChannelClient {
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .get();
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            final ChannelDto channelDto = response.readEntity(ChannelDto.class);
-            // TODO: usunąć
-            log.info("getChannelByName: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));
-            //
-            return channelDto;
+            return response.readEntity(ChannelDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto;
+        return response.readEntity(ExceptionDto.class);
     }
 
     @Override
@@ -75,7 +59,7 @@ public class ChannelRestClient implements ChannelClient {
     }
 
     @Override
-    public String setChannelClient(String name, String clientName) {
+    public ResponseDto setChannelClient(String name, String clientName) {
         final ChannelUpdateDto channelUpdateDto = ChannelUpdateDto.builder()
                 .name(name)
                 .clientName(clientName)
@@ -85,17 +69,9 @@ public class ChannelRestClient implements ChannelClient {
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .put(Entity.entity(channelUpdateDto, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            final ChannelDto channelDto = response.readEntity(ChannelDto.class);
-            // TODO: usunąć
-            log.info("setChannelClient: " + channelDto.getId() + " - " + channelDto.getName() + " - " + String.join(" ", channelDto.getClients()));
-            //
-            return channelDto.toString();
+            return response.readEntity(ChannelDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto.getDescription();
+        return response.readEntity(ExceptionDto.class);
     }
 
 }

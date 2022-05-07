@@ -12,6 +12,6 @@ public interface ChannelClient {
 
     List<ChannelDto> getAllChannels();
 
-    String setChannelClient(String name, String clientName);
+    ResponseDto setChannelClient(String name, String clientName);
 
 }

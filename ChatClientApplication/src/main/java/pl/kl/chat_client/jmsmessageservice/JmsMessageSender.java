@@ -1,20 +1,19 @@
 package pl.kl.chat_client.jmsmessageservice;
 
-import lombok.SneakyThrows;
-
 import javax.jms.*;
+import javax.naming.NamingException;
+import java.io.File;
 
 public class JmsMessageSender {
 
     private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
     private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
-    private final ProxyFactory proxyFactory;
+    private final JmsMessagingFactory jmsMessagingFactory = new MainJmsMessagingFactory();
+    private final ProxyFactory proxyFactory = jmsMessagingFactory.createProxyFactory();
     private final ConnectionFactory connectionFactory;
     private final Topic topic;
 
-    @SneakyThrows
-    public JmsMessageSender() {
-        this.proxyFactory = new ProxyFactory();
+    public JmsMessageSender() throws NamingException {
         this.connectionFactory = proxyFactory.createProxy(CONNECTION_FACTORY_JNDI_NAME);
         this.topic = proxyFactory.createProxy(MESSAGES_TOPIC_JNDI_NAME);
     }
@@ -27,11 +26,19 @@ public class JmsMessageSender {
             messageToSend.setStringProperty("content", message);
             jmsContext.createProducer().send(topic, messageToSend);
         }
-        System.out.println("WYSLANO");
     }
 
-    public void sendFile(String name, String activeChannel, String file) {
-        // TODO: zaimplementować
+    public void sendFile(String name, String activeChannel, String filePath) {
+        if (ifFileExists(filePath)) {
+            // TODO: zaimplementować
+        } else {
+            // TODO: zaimplementować
+        }
+    }
+
+    private boolean ifFileExists(String filePath) {
+        final File fileToSend = new File(filePath);
+        return fileToSend.exists();
     }
 
 }

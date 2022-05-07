@@ -1,27 +1,29 @@
 package pl.kl.chat_client.jmsmessageservice;
 
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import pl.kl.chat_client.ChatClient;
 
 import javax.jms.*;
+import javax.naming.NamingException;
+import java.io.PrintWriter;
 
-@Log // TODO: usunąć
 public class JmsMessageListener implements MessageListener, Runnable {
 
-    private final ProxyFactory proxyFactory;
+    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
+    private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
+    private final JmsMessagingFactory jmsMessagingFactory = new MainJmsMessagingFactory();
+    private final ProxyFactory proxyFactory = jmsMessagingFactory.createProxyFactory();
     private final ConnectionFactory connectionFactory;
     private final Topic topic;
     private final ChatClient chatClient;
-    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
-    private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
+    private final PrintWriter printer;
 
     @SneakyThrows
-    public JmsMessageListener(ChatClient chatClient) {
-        this.proxyFactory = new ProxyFactory();
+    public JmsMessageListener(ChatClient chatClient, PrintWriter printer) throws NamingException {
         this.connectionFactory = proxyFactory.createProxy(CONNECTION_FACTORY_JNDI_NAME);
         this.topic = proxyFactory.createProxy(MESSAGES_TOPIC_JNDI_NAME);
         this.chatClient = chatClient;
+        this.printer = printer;
     }
 
     @Override
@@ -33,7 +35,6 @@ public class JmsMessageListener implements MessageListener, Runnable {
         try (JMSContext jmsContext = connectionFactory.createContext();
              JMSConsumer consumer = jmsContext.createConsumer(topic);) {
             while (true) {
-//            System.out.println("SŁUCHAM");
                 consumer.setMessageListener(this::onMessage);
             }
         }
@@ -65,7 +66,7 @@ public class JmsMessageListener implements MessageListener, Runnable {
             final String channel = message.getStringProperty("channel");
             final String content = message.getStringProperty("content");
             if (chatClient.getActiveChannel().equals(channel)) {
-                System.out.println(client + " -> " + channel + ": " + content);
+                printer.println(client + " -> " + channel + ": " + content);
             } else {
                 chatClient.getMessageCache().cacheMessageFromChannel(client, channel, content);
             }

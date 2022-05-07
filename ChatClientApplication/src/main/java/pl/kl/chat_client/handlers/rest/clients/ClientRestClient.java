@@ -29,18 +29,10 @@ public class ClientRestClient implements ClientClient {
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(clientCreateDto, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-            final ClientDto clientDto = response.readEntity(ClientDto.class);
-            // TODO: usunąć
-            log.info("createClient: " + clientDto.getId() + " - " + clientDto.getName() + " - " + clientDto.getActiveChannel());
-            //
-            return clientDto;
+        if (Response.Status.CREATED.getStatusCode() == response.getStatus()) {
+            return response.readEntity(ClientDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto;
+        return response.readEntity(ExceptionDto.class);
     }
 
     @Override
@@ -51,18 +43,10 @@ public class ClientRestClient implements ClientClient {
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .get();
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            final ClientDto clientDto = response.readEntity(ClientDto.class);
-            // TODO: usunąć
-            log.info("getClientByName: " + clientDto.getId() + " - " + clientDto.getName() + " - " + clientDto.getActiveChannel());
-            //
-            return clientDto;
+        if (Response.Status.OK.getStatusCode() == response.getStatus()) {
+            return response.readEntity(ClientDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto;
+        return response.readEntity(ExceptionDto.class);
     }
 
     @Override
@@ -85,18 +69,10 @@ public class ClientRestClient implements ClientClient {
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .put(Entity.entity(clientUpdateDto, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == 200) {
-            final ClientDto clientDto = response.readEntity(ClientDto.class);
-            // TODO: usunąć
-            log.info("setClientActiveChannel: " + clientDto.getId() + " - " + clientDto.getName() + " - " + clientDto.getActiveChannel());
-            //
-            return clientDto;
+        if (Response.Status.OK.getStatusCode() == response.getStatus()) {
+            return response.readEntity(ClientDto.class);
         }
-        final ExceptionDto exceptionDto = response.readEntity(ExceptionDto.class);
-        // TODO: usunąć
-        log.info("exception: " + exceptionDto.getTimestamp() + " - " + exceptionDto.getDescription());
-        //
-        return exceptionDto;
+        return response.readEntity(ExceptionDto.class);
     }
 
 }
