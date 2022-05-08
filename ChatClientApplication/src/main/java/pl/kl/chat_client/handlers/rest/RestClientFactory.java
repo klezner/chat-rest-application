@@ -5,7 +5,7 @@ import pl.kl.chat_client.handlers.rest.channels.ChannelClient;
 import pl.kl.chat_client.handlers.rest.clients.ClientClient;
 import pl.kl.chat_client.handlers.rest.messages.MessageClient;
 
-public interface ChatClientFactory {
+public interface RestClientFactory {
 
     ResteasyClient createResteasyClient();
 

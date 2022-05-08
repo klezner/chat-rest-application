@@ -2,6 +2,7 @@ package pl.kl.chat_client.jmsmessageservice;
 
 import lombok.SneakyThrows;
 import pl.kl.chat_client.ChatClient;
+import pl.kl.chat_client.common.JndiNamesProvider;
 
 import javax.jms.*;
 import javax.naming.NamingException;
@@ -9,8 +10,7 @@ import java.io.PrintWriter;
 
 public class JmsMessageListener implements MessageListener, Runnable {
 
-    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
-    private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
+
     private final JmsMessagingFactory jmsMessagingFactory = new MainJmsMessagingFactory();
     private final ProxyFactory proxyFactory = jmsMessagingFactory.createProxyFactory();
     private final ConnectionFactory connectionFactory;
@@ -20,8 +20,8 @@ public class JmsMessageListener implements MessageListener, Runnable {
 
     @SneakyThrows
     public JmsMessageListener(ChatClient chatClient, PrintWriter printer) throws NamingException {
-        this.connectionFactory = proxyFactory.createProxy(CONNECTION_FACTORY_JNDI_NAME);
-        this.topic = proxyFactory.createProxy(MESSAGES_TOPIC_JNDI_NAME);
+        this.connectionFactory = proxyFactory.createProxy(JndiNamesProvider.CONNECTION_FACTORY_JNDI_NAME);
+        this.topic = proxyFactory.createProxy(JndiNamesProvider.MESSAGES_TOPIC_JNDI_NAME);
         this.chatClient = chatClient;
         this.printer = printer;
     }

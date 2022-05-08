@@ -9,10 +9,7 @@ import pl.kl.chat_client.handlers.rest.clients.ClientRestClient;
 import pl.kl.chat_client.handlers.rest.messages.MessageClient;
 import pl.kl.chat_client.handlers.rest.messages.MessageRestClient;
 
-public class MainChatClientFactory implements ChatClientFactory {
-
-    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/RemoteConnectionFactory";
-    private static final String MESSAGES_TOPIC_JNDI_NAME = "jms/topic/Messages";
+public class MainRestClientFactory implements RestClientFactory {
 
     @Override
     public ResteasyClient createResteasyClient() {

@@ -5,8 +5,8 @@ import pl.kl.chat_client.ChatClient;
 import pl.kl.chat_client.common.Actions;
 import pl.kl.chat_client.common.ExceptionDto;
 import pl.kl.chat_client.common.ResponseDto;
-import pl.kl.chat_client.handlers.rest.ChatClientFactory;
-import pl.kl.chat_client.handlers.rest.MainChatClientFactory;
+import pl.kl.chat_client.handlers.rest.MainRestClientFactory;
+import pl.kl.chat_client.handlers.rest.RestClientFactory;
 import pl.kl.chat_client.handlers.rest.channels.ChannelClient;
 import pl.kl.chat_client.handlers.rest.channels.ChannelDto;
 import pl.kl.chat_client.handlers.rest.clients.ClientClient;
@@ -32,15 +32,18 @@ public class UserInterface {
     private static final String SPLIT_REGEX = " ";
     private static final int MAX_SPLIT_LIMIT = 3;
     private final ChatClient chatClient;
+
     private final UserInterfaceFactory userInterfaceFactory = new MainUserInterfaceFactory();
     private final BufferedReader reader = userInterfaceFactory.createBufferedReader();
     private final PrintWriter printer = userInterfaceFactory.createPrintWriter();
-    private final ChatClientFactory chatClientFactory = new MainChatClientFactory();
+
+    private final RestClientFactory restClientFactory = new MainRestClientFactory();
+    private final ResteasyClient resteasyClient = restClientFactory.createResteasyClient();
+    private final ClientClient clientClient = restClientFactory.createClientClient(resteasyClient);
+    private final ChannelClient channelClient = restClientFactory.createChannelClient(resteasyClient);
+    private final MessageClient messageClient = restClientFactory.createMessageClient(resteasyClient);
+
     private final JmsMessageSender messageSender;
-    private final ResteasyClient resteasyClient = chatClientFactory.createResteasyClient();
-    private final ClientClient clientClient = chatClientFactory.createClientClient(resteasyClient);
-    private final ChannelClient channelClient = chatClientFactory.createChannelClient(resteasyClient);
-    private final MessageClient messageClient = chatClientFactory.createMessageClient(resteasyClient);
 
     public UserInterface(ChatClient chatClient) throws NamingException {
         this.chatClient = chatClient;
