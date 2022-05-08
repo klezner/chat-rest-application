@@ -1,7 +1,6 @@
 package pl.kl.chat_client.handlers.rest.messages;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 
 import javax.ws.rs.core.GenericType;
@@ -9,7 +8,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Log
 @RequiredArgsConstructor
 public class MessageRestClient implements MessageClient {
 

@@ -8,8 +8,7 @@ public enum Actions {
     CHANNEL_JOIN("/join"),
     ALL_CLIENTS("/clients"),
     ALL_CHANNELS("/channels"),
-    UPLOAD_FILE("/upload"),
-    DOWNLOAD_FILE("/download"),
+    SEND_FILE("/send"),
     CHAT_HISTORY("/history"),
     CLOSE_CONNECTION("/quit");
 

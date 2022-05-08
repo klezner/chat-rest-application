@@ -25,7 +25,6 @@ class ClientProcessor implements ClientService {
         return clientRepository.save(client);
     }
 
-    // TODO: wyodrębnić do nowej klasy
     private void ifClientExists(String name) {
         if (clientRepository.getByName(name).isPresent()) {
             throw new ClientAlreadyExistsException();
