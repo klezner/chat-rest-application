@@ -5,7 +5,7 @@ Założenia ogólne
 1. Projekt realizowany samodzielnie przez wszystkich uczestników kursu
 2. Nieprzekraczalny termin oddania projektu to 8.05.2022
 3. Stworzony kod powinien być opublikowany na repozytorium git np. GitHub
-4. Realizując projekt używamy standardowego SDK Java 11 oraz technologii poznanych w dalszej części kursu tj. CDI,
+4. Realizując projekt używamy standardowego SDK Java 17 oraz technologii poznanych w dalszej części kursu tj. CDI,
    JPA/Hibernate, elementy Jakarta EE
 6. Ze względu na kolejność realizowanych zajęć testy jednostkowe nie są wymagane, ale mile widziane
 
@@ -24,6 +24,11 @@ Obsługa aplikacji powinna odbywać się z terminala/linii komend (interfejs tek
 Uwaga! Należy zwrócić szczególną uwagę na aspekty związane z wielowątkowością - zapewnić zarówno bezpieczeństwo jak
 wydajność całego rozwiązania.
 
+> **Setup**
+>* Run PostgreSQL db with docker-compose.yml
+>* Start JBoss/Wildfly application server
+>* Run ChatClientApplication
+
 > **Server -> User**
 >* online - connected
 >* offline - disconnected
@@ -41,7 +46,7 @@ wydajność całego rozwiązania.
 >**User -> User**
 >* channel messages - ok
 >* cache channel messages - ok
->* send file to users on active channel - x
+>* send file to users on active channel - ok
 
 > **Available commands**
 >* ***clientMessage***

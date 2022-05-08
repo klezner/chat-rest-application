@@ -3,10 +3,9 @@ package pl.kl.chat.ui;
 import pl.kl.chat.ChatClient;
 import pl.kl.chat.common.Actions;
 import pl.kl.chat.handlers.service.ClientService;
-import pl.kl.chat.jmsmessageservice.JmsMessageListener;
-import pl.kl.chat.jmsmessageservice.JmsMessageSender;
+import pl.kl.chat.messagingservice.JmsMessageListener;
+import pl.kl.chat.messagingservice.JmsMessageSender;
 
-import javax.jms.JMSException;
 import javax.naming.NamingException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,15 +29,14 @@ public class UserInterface {
         this.reader = userInterfaceFactory.createBufferedReader();
         this.printer = userInterfaceFactory.createPrintWriter();
         this.clientService = userInterfaceFactory.createClientService(chatClient, reader, printer);
-        this.messageSender = new JmsMessageSender();
+        this.messageSender = new JmsMessageSender(printer);
     }
 
     public void loginUser() throws IOException {
         clientService.loginClient();
     }
 
-    public void handleUser() throws NamingException, IOException, JMSException {
-        // TODO: pomyśleć co z tym
+    public void handleUser() throws NamingException, IOException {
         startJmsListenerThread();
 
         String message;
@@ -58,7 +56,7 @@ public class UserInterface {
                     handleAllChannelsGet();
                 } else if (Actions.CHAT_HISTORY.getInput().equalsIgnoreCase(command) && splitMessage.length == 1) {
                     handleChannelHistory();
-                } else if (Actions.CHANNEL.getInput().equalsIgnoreCase(command) && splitMessage.length >= 1) {
+                } else if (Actions.CHANNEL.getInput().equalsIgnoreCase(command) && splitMessage.length > 1) {
                     final String commandOption = splitMessage[1];
                     if (Actions.ALL_CLIENTS.getInput().equalsIgnoreCase(commandOption) && splitMessage.length == 2) {
                         handleChannelUsernamesGet();
@@ -85,13 +83,11 @@ public class UserInterface {
         jmsListenerThread.start();
     }
 
-    private void handleMessageSend(String message) throws JMSException {
+    private void handleMessageSend(String message) {
         messageSender.sendMessage(chatClient.getName(), chatClient.getActiveChannel(), message);
     }
 
     private void handleFileSend(String filePath) {
-        // TODO: zmienić
-        printer.println("To implement: handleFileUpload");
         messageSender.sendFile(chatClient.getName(), chatClient.getActiveChannel(), filePath);
     }
 

@@ -1,4 +1,4 @@
-package pl.kl.chat.jmsmessageservice;
+package pl.kl.chat.messagingservice;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

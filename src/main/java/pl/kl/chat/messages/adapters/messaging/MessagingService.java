@@ -1,8 +1,8 @@
 package pl.kl.chat.messages.adapters.messaging;
 
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import pl.kl.chat.common.ChatMessage;
+import pl.kl.chat.common.ChatMessageType;
 import pl.kl.chat.messages.ports.MessageService;
 
 import javax.ejb.ActivationConfigProperty;
@@ -15,8 +15,6 @@ import javax.jms.MessageListener;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "Messages")
 })
-// TODO: usunąć
-@Log
 public class MessagingService implements MessageListener {
 
     @Inject
@@ -28,9 +26,12 @@ public class MessagingService implements MessageListener {
     @Override
     public void onMessage(Message message) {
         final ChatMessage chatMessage = message.getBody(ChatMessage.class);
-        // TODO: usunąć
-        log.info(chatMessage.getClientSentBy() + " -> " + chatMessage.getChannelSentTo() + ": " + chatMessage.getContent());
-        messageService.create(chatMessage.getClientSentBy(), chatMessage.getChannelSentTo(), chatMessage.getContent());
+        if (ChatMessageType.TEXT == chatMessage.getType()) {
+            messageService.create(chatMessage.getClientSentBy(), chatMessage.getChannelSentTo(), chatMessage.getContent());
+        } else if (ChatMessageType.FILE == chatMessage.getType()) {
+            final String messageFormat = String.format("File: %s has been sent", chatMessage.getFileName());
+            messageService.create(chatMessage.getClientSentBy(), chatMessage.getChannelSentTo(), messageFormat);
+        }
     }
 
 }
